@@ -24,20 +24,20 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import benchmark.qualification.QueryResult;
 
-public class SPARQLConnection implements ServerConnection{
+public class SPARQLConnection2 implements ServerConnection{
     private String serviceURL;
     private String updateServiceURL;
     private String defaultGraph;
-    private static Logger logger = LoggerFactory.getLogger( SPARQLConnection.class );
+    private static Logger logger = LoggerFactory.getLogger( SPARQLConnection2.class );
     private int timeout;
 
-    public SPARQLConnection(String serviceURL, String defaultGraph, int timeout) {
+    public SPARQLConnection2(String serviceURL, String defaultGraph, int timeout) {
         this.serviceURL = serviceURL;
         this.defaultGraph = defaultGraph;
         this.timeout = timeout;
     }
 
-    public SPARQLConnection(String serviceURL, String updateServiceURL, String defaultGraph, int timeout) {
+    public SPARQLConnection2(String serviceURL, String updateServiceURL, String defaultGraph, int timeout) {
         this.updateServiceURL = updateServiceURL;
         this.serviceURL = serviceURL;
         this.defaultGraph = defaultGraph;
@@ -144,7 +144,7 @@ public class SPARQLConnection implements ServerConnection{
             return;
         }
 
-        if(logger.isInfoEnabled() && queryMixRun > 0)
+        if(logger.isDebugEnabled() && queryMixRun > 0)
             logResultInfo(queryNr, queryMixRun, timeInSeconds,
                        queryString, queryType,
                        resultCount);
@@ -194,7 +194,7 @@ private int countBytes(InputStream is) {
 
 
         sb.append("\n__________________________________________________________________________________\n");
-        logger.info(sb.toString());
+        logger.debug(sb.toString());
     }
 
     private int countResults(InputStream s) throws SocketTimeoutException {
