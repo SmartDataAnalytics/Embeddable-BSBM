@@ -1,278 +1,183 @@
 package benchmark.testdriver;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.Namespace;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
+import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
+import org.aksw.jena_sparql_api.core.utils.QueryExecutionUtils;
+import org.apache.jena.query.QueryCancelledException;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.ResultSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
-import org.xml.sax.Attributes;
-import org.xml.sax.helpers.DefaultHandler;
+
+import com.google.common.base.Stopwatch;
 
 import benchmark.qualification.QueryResult;
 
-public class SPARQLConnection2 implements ServerConnection{
-    private String serviceURL;
-    private String updateServiceURL;
-    private String defaultGraph;
-    private static Logger logger = LoggerFactory.getLogger( SPARQLConnection2.class );
-    private int timeout;
+public class SPARQLConnection2 implements ServerConnection {
 
-    public SPARQLConnection2(String serviceURL, String defaultGraph, int timeout) {
-        this.serviceURL = serviceURL;
-        this.defaultGraph = defaultGraph;
-        this.timeout = timeout;
-    }
+    private static final Logger logger = LoggerFactory.getLogger(SPARQLConnection2.class);
 
-    public SPARQLConnection2(String serviceURL, String updateServiceURL, String defaultGraph, int timeout) {
-        this.updateServiceURL = updateServiceURL;
-        this.serviceURL = serviceURL;
-        this.defaultGraph = defaultGraph;
-        this.timeout = timeout;
+    protected QueryExecutionFactory qef;
+
+
+    public SPARQLConnection2(QueryExecutionFactory qef) {
+        this.qef = qef;
     }
 
     /*
      * Execute Query with Query Object
      */
-    public void executeQuery(Query query, byte queryType) {
-        executeQuery(query.getQueryString(), queryType, query.getNr(), query.getQueryMix());
+//    public void executeQuery(int queryNum, Query query, byte queryType) {
+//        executeQuery(query.getQueryString(), queryType, query.getNr(), query.getQueryMix());
+//    }
+
+    public QueryResult executeQuery(String queryStr, int queryType, int queryNr) {
+        QueryResult result;
+
+        if(queryType==Query.UPDATE_TYPE) {
+            throw new UnsupportedOperationException();
+        }
+
+
+        int numResults = -1;
+        List<String> heads = Collections.emptyList();
+        boolean hasTimedOut = false;
+        long executionTimeInMs = -1;
+        boolean sorted = queryStr.toLowerCase().contains("order by"); /// hack; use proper parsing for determining that feature
+
+        long timeout1InMs = -1;
+
+        try(QueryExecution qe = qef.createQueryExecution(queryStr)) {
+            timeout1InMs = qe.getTimeout1();
+
+            Stopwatch sw = Stopwatch.createStarted();
+
+            ResultSet rs = qe.execSelect();
+            heads = rs.getResultVars();
+            numResults = (int)QueryExecutionUtils.consume(qe);
+
+
+            executionTimeInMs = sw.stop().elapsed(TimeUnit.MILLISECONDS);
+
+        } catch(QueryCancelledException e) {
+            // TODO Determine the proper exception type
+
+            hasTimedOut = true;
+            // FIXME We may want to consider timeout2 here as well
+            double t = -1.0; //timeout1InMs / 1000.0;
+            System.out.println("Query " + queryNr + ": " + t + " seconds timeout!");
+            //queryMix.reportTimeOut();//inc. timeout counter
+            //queryMix.setCurrent(0, t);
+        }
+
+        result = new QueryResult(queryNr, queryStr, numResults, sorted, heads, hasTimedOut, timeout1InMs, executionTimeInMs);
+
+        return result;
     }
 
     /*
      * execute Query with Query String
      */
-    private void executeQuery(String queryString, byte queryType, int queryNr, QueryMix queryMix) {
-        double timeInSeconds;
+    private void executeQuery(String queryStr, byte queryType, int queryNr, QueryMix queryMix) {
+        QueryResult queryResult = executeQuery(queryStr, queryType, queryNr);
 
-        NetQuery qe;
-        if(queryType==Query.UPDATE_TYPE)
-            qe = new NetQuery(updateServiceURL, queryString, queryType, defaultGraph, timeout);
-        else
-            qe = new NetQuery(serviceURL, queryString, queryType, defaultGraph, timeout);
-        int queryMixRun = queryMix.getRun() + 1;
+        if(!queryResult.isHasTimedOut()) {
+            int resultCount = queryResult.getNrResults();
 
-        InputStream is = qe.exec();
-        if(is==null) {
-            double t = this.timeout/1000.0;
+            int queryMixRun = queryMix.getRun() + 1;
+            double timeInSeconds = queryResult.getExecutionTimeInMs() / 1000.0;
+
+            if(logger.isInfoEnabled() && queryMixRun > 0)
+                logResultInfo(queryNr, queryMixRun, timeInSeconds,
+                           queryStr, queryType,
+                           resultCount);
+
+            queryMix.setCurrent(resultCount, timeInSeconds);
+
+        } else {
+            // FIXME We may want to consider timeout2 here as well
+            double t = -1.0; //timeout1InMs / 1000.0;
             System.out.println("Query " + queryNr + ": " + t + " seconds timeout!");
             queryMix.reportTimeOut();//inc. timeout counter
             queryMix.setCurrent(0, t);
-            qe.close();
-            return;
         }
-        int resultCount = 0;
-        //Write XML result into result
-        try {
-            if(queryType==Query.SELECT_TYPE)
-                resultCount = countResults(is);
-            else
-                resultCount = countBytes(is);
-        } catch(SocketTimeoutException e) {
-            double t = this.timeout/1000.0;
-            System.out.println("Query " + queryNr + ": " + t + " seconds timeout!");
-            queryMix.reportTimeOut();//inc. timeout counter
-            queryMix.setCurrent(0, t);
-            qe.close();
-            return;
-        }
-        timeInSeconds = qe.getExecutionTimeInSeconds();
-
-        if(logger.isInfoEnabled() && queryMixRun > 0)
-            logResultInfo(queryNr, queryMixRun, timeInSeconds,
-                       queryString, queryType,
-                       resultCount);
-
-        queryMix.setCurrent(resultCount, timeInSeconds);
-        qe.close();
     }
 
-    public void executeQuery(CompiledQuery query, CompiledQueryMix queryMix) {
-        double timeInSeconds;
 
-        String queryString = query.getQueryString();
+    @Override
+    public void executeQuery(Query query, byte queryType) {
+        executeQuery(query.getQueryString(), queryType, query.getNr(), query.getQueryMix());
+    }
+
+
+    @Override
+    public void executeQuery(CompiledQuery query, CompiledQueryMix queryMix) {
+        String queryStr = query.getQueryString();
         byte queryType = query.getQueryType();
         int queryNr = query.getNr();
 
-        NetQuery qe;
-        if(query.getQueryType()==Query.UPDATE_TYPE)
-            qe = new NetQuery(updateServiceURL, queryString, queryType, defaultGraph, timeout);
-        else
-            qe = new NetQuery(serviceURL, queryString, queryType, defaultGraph, timeout);
+        QueryResult queryResult = executeQuery(queryStr, queryType, queryNr);
+        long timeout1InMs = queryResult.getTimeout1InMs();
 
-        int queryMixRun = queryMix.getRun() + 1;
+        if(!queryResult.isHasTimedOut()) {
+            int resultCount = queryResult.getNrResults();
 
-        InputStream is = qe.exec();
+            int queryMixRun = queryMix.getRun() + 1;
+            double timeInSeconds = queryResult.getExecutionTimeInMs() / 1000.0;
 
-        if(is==null) {//then Timeout!
-            double t = this.timeout/1000.0;
+            if(logger.isDebugEnabled() && queryMixRun > 0)
+                logResultInfo(queryNr, queryMixRun, timeInSeconds,
+                           queryStr, queryType,
+                           resultCount);
+
+            queryMix.setCurrent(resultCount, timeInSeconds);
+
+        } else {
+            // FIXME We may want to consider timeout2 here as well
+            double t = timeout1InMs / 1000.0;
             System.out.println("Query " + queryNr + ": " + t + " seconds timeout!");
             queryMix.reportTimeOut();//inc. timeout counter
             queryMix.setCurrent(0, t);
-            qe.close();
-            return;
-        }
-
-        int resultCount = 0;
-
-        try {
-            //Write XML result into result
-            if(queryType==Query.SELECT_TYPE)
-                resultCount = countResults(is);
-            else
-                resultCount = countBytes(is);
-
-            timeInSeconds = qe.getExecutionTimeInSeconds();
-        } catch(SocketTimeoutException e) {
-            double t = this.timeout/1000.0;
-            System.out.println("Query " + queryNr + ": " + t + " seconds timeout!");
-            queryMix.reportTimeOut();//inc. timeout counter
-            queryMix.setCurrent(0, t);
-            qe.close();
-            return;
-        }
-
-        if(logger.isDebugEnabled() && queryMixRun > 0)
-            logResultInfo(queryNr, queryMixRun, timeInSeconds,
-                       queryString, queryType,
-                       resultCount);
-
-        queryMix.setCurrent(resultCount, timeInSeconds);
-        qe.close();
-    }
-
-
-private int countBytes(InputStream is) {
-    int nrBytes=0;
-    byte[] buf = new byte[10000];
-    int len=0;
-//	StringBuffer sb = new StringBuffer(1000);
-    try {
-        while((len=is.read(buf))!=-1) {
-            nrBytes += len;//resultCount counts the returned bytes
-//			String temp = new String(buf,0,len);
-//			temp = "\n\n" + temp + "\n\n";
-//			logger.log(Level.ALL, temp);
-//			sb.append(temp);
-        }
-    } catch(IOException e) {
-        System.err.println("Could not read result from input stream");
-    }
-//	System.out.println(sb.toString());
-    return nrBytes;
-}
-
-    private void logResultInfo(int queryNr, int queryMixRun, double timeInSeconds,
-                               String queryString, byte queryType,
-                               int resultCount) {
-        StringBuffer sb = new StringBuffer(1000);
-        sb.append("\n\n\tQuery " + queryNr + " of run " + queryMixRun + " has been executed ");
-        sb.append("in " + String.format("%.6f",timeInSeconds) + " seconds.\n" );
-        sb.append("\n\tQuery string:\n\n");
-        sb.append(queryString);
-        sb.append("\n\n");
-
-        //Log results
-        if(queryType==Query.DESCRIBE_TYPE)
-            sb.append("\tQuery(Describe) result (" + resultCount + " Bytes): \n\n");
-        else if(queryType==Query.CONSTRUCT_TYPE)
-            sb.append("\tQuery(Construct) result (" + resultCount + " Bytes): \n\n");
-        else
-            sb.append("\tQuery results (" + resultCount + " results): \n\n");
-
-
-        sb.append("\n__________________________________________________________________________________\n");
-        logger.debug(sb.toString());
-    }
-
-    private int countResults(InputStream s) throws SocketTimeoutException {
-        ResultHandler handler = new ResultHandler();
-        int count=0;
-        try {
-          SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
-//		  ByteArrayInputStream bis = new ByteArrayInputStream(s.getBytes("UTF-8"));
-          saxParser.parse( s, handler );
-          count = handler.getCount();
-        } catch(SocketTimeoutException e) { throw new SocketTimeoutException(); }
-          catch(Exception e) {
-            System.err.println("SAX Error");
-            e.printStackTrace();
-            return -1;
-        }
-        return count;
-    }
-
-    private static class ResultHandler extends DefaultHandler {
-        private int count;
-
-        ResultHandler() {
-            count = 0;
-        }
-
-        @Override
-        public void startElement( String namespaceURI,
-                String localName,   // local name
-                String qName,       // qualified name
-                Attributes attrs ) {
-            if(qName.equals("result"))
-                count++;
-        }
-
-        public int getCount() {
-            return count;
         }
     }
 
-    public void close() {
-        //nothing to close
-    }
 
     /*
      * (non-Javadoc)
      * @see benchmark.testdriver.ServerConnection#executeValidation(benchmark.testdriver.Query, byte, java.lang.String[])
      * Gather information about the result a query returns.
      */
+    @Override
     public QueryResult executeValidation(Query query, byte queryType) {
+
         String queryString = query.getQueryString();
         int queryNr = query.getNr();
-        String[] rowNames = query.getRowNames();
-        boolean sorted = queryString.toLowerCase().contains("order by");
-        QueryResult queryResult = null;
 
-        NetQuery qe;
-        if(queryType==Query.UPDATE_TYPE)
-            qe = new NetQuery(updateServiceURL, queryString, queryType, defaultGraph, 0);
-        else
-            qe = new NetQuery(serviceURL, queryString, queryType, defaultGraph, 0);
+        QueryResult queryResult = executeQuery(queryString, queryType, queryNr);
 
-        InputStream is = qe.exec();
-
-        if(queryType!=Query.UPDATE_TYPE) {
-            Document doc = getXMLDocument(is);
-            XMLOutputter outputter = new XMLOutputter();
-            logResultInfo(query, outputter.outputString(doc));
-
-            if(queryType==Query.SELECT_TYPE)
-                queryResult = gatherResultInfoForSelectQuery(queryString, queryNr, sorted, doc, rowNames);
+        if(queryType != Query.UPDATE_TYPE) {
+            logResultInfo(query, "TODO obtain the result set");
         }
         else
             logResultInfo(query, "");
 
         if(queryResult!=null)
             queryResult.setRun(query.getQueryMix().getRun());
+
         return queryResult;
+    }
+
+
+    @Override
+    public void close() {
+        try {
+            qef.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void logResultInfo(Query query, String queryResult) {
@@ -287,68 +192,28 @@ private int countBytes(InputStream is) {
         logger.info(sb.toString());
     }
 
-    private Document getXMLDocument(InputStream is) {
-        SAXBuilder builder = new SAXBuilder();
-        builder.setValidation(false);
-        builder.setIgnoringElementContentWhitespace(true);
-        Document doc = null;
-        try {
-            doc = builder.build(is);
-        } catch(JDOMException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        } catch(IOException e ) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-        return doc;
+
+    private void logResultInfo(int queryNr, int queryMixRun, double timeInSeconds,
+            String queryString, byte queryType,
+            int resultCount) {
+        StringBuffer sb = new StringBuffer(1000);
+        sb.append("\n\n\tQuery " + queryNr + " of run " + queryMixRun + " has been executed ");
+        sb.append("in " + String.format("%.6f",timeInSeconds) + " seconds.\n" );
+        sb.append("\n\tQuery string:\n\n");
+        sb.append(queryString);
+        sb.append("\n\n");
+
+        //Log results
+        if(queryType==Query.DESCRIBE_TYPE)
+        sb.append("\tQuery(Describe) result (" + resultCount + " Bytes): \n\n");
+        else if(queryType==Query.CONSTRUCT_TYPE)
+        sb.append("\tQuery(Construct) result (" + resultCount + " Bytes): \n\n");
+        else
+        sb.append("\tQuery results (" + resultCount + " results): \n\n");
+
+
+        sb.append("\n__________________________________________________________________________________\n");
+        logger.info(sb.toString());
     }
 
-    private QueryResult gatherResultInfoForSelectQuery(String queryString, int queryNr, boolean sorted, Document doc, String[] rows) {
-        Element root = doc.getRootElement();
-
-        //Get head information
-        Element child = root.getChild("head", Namespace.getNamespace("http://www.w3.org/2005/sparql-results#"));
-
-        //Get result rows (<head>)
-        @SuppressWarnings("unchecked")
-        List<Element> headChildren = child.getChildren("variable", Namespace.getNamespace("http://www.w3.org/2005/sparql-results#"));
-
-        Iterator<Element> it = headChildren.iterator();
-        ArrayList<String> headList = new ArrayList<String>();
-        while(it.hasNext()) {
-            headList.add((it.next()).getAttributeValue("name"));
-        }
-
-        @SuppressWarnings("unchecked")
-        List<Element> resultChildren = root.getChild("results", Namespace.getNamespace("http://www.w3.org/2005/sparql-results#"))
-                                   .getChildren("result", Namespace.getNamespace("http://www.w3.org/2005/sparql-results#"));
-        int nrResults = resultChildren.size();
-
-        QueryResult queryResult = new QueryResult(queryNr, queryString, nrResults, sorted, headList);
-
-        it = resultChildren.iterator();
-        while(it.hasNext()) {
-            Element resultElement = it.next();
-            StringBuilder result = new StringBuilder();
-
-            //get the row values and paste it together to one String
-            for(int i=0;i<rows.length;i++) {
-                @SuppressWarnings("unchecked")
-                List<Element> bindings = resultElement.getChildren("binding", Namespace.getNamespace("http://www.w3.org/2005/sparql-results#"));
-                String rowName = rows[i];
-                for(int j=0;j<bindings.size();j++) {
-                    Element binding = bindings.get(j);
-                    if(binding.getAttributeValue("name").equals(rowName))
-                        if(result.length()==0)
-                            result.append(rowName + ": " + ((Element)binding.getChildren().get(0)).getTextNormalize());
-                        else
-                            result.append("\n" + rowName + ": " + ((Element)binding.getChildren().get(0)).getTextNormalize());
-                }
-            }
-
-            queryResult.addResult(result.toString());
-        }
-        return queryResult;
-    }
 }
