@@ -145,6 +145,10 @@ public class TestDriver {
         return this;
     }
 
+    public long getSeed() {
+        return seed;
+    }
+
     public AbstractParameterPool getParameterPool() {
         return parameterPool;
     }

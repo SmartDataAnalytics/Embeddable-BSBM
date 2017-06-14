@@ -1194,6 +1194,7 @@ public class Generator {
     public static void main(String[] args) {
         init(args);
         run();
+        writeTestDriverData();
     }
 
     public static void init(String[] args) {
@@ -1219,7 +1220,6 @@ public class Generator {
         createRatingSiteData(rtSeeds);
 
         serializer.serialize();
-        writeTestDriverData();
 
         if(generateUpdateDataset)
             createUpdateDataset();
