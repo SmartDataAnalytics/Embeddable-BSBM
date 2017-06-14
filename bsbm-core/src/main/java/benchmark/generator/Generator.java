@@ -87,6 +87,13 @@ public class Generator {
 
     private static File outputDir;
 
+
+    public static void setSerializer(Serializer serializer) {
+        Generator.serializer = serializer;
+    }
+
+
+
     //Set parameters
     public static void init()
     {
@@ -1185,9 +1192,16 @@ public class Generator {
      * @param args
      */
     public static void main(String[] args) {
+        init(args);
+        run();
+    }
+
+    public static void init(String[] args) {
         processProgramParameters(args);
         init();
+    }
 
+    public static void run() {
         Long[] ptSeeds = generateSeedsProductType();
         Long[] pfSeeds = generateSeedsProductFeature();
         Long[] producerSeeds = generateSeedsProducer();

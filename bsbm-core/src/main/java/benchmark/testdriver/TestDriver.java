@@ -140,9 +140,20 @@ public class TestDriver {
         return server;
     }
 
-    public void setServer(ServerConnection server) {
+    public TestDriver setServer(ServerConnection server) {
         this.server = server;
+        return this;
     }
+
+    public AbstractParameterPool getParameterPool() {
+        return parameterPool;
+    }
+
+    public TestDriver setParameterPool(AbstractParameterPool parameterPool) {
+        this.parameterPool = parameterPool;
+        return this;
+    }
+
 
 
     /*

@@ -1,7 +1,6 @@
 package benchmark.generator;
 
 import java.io.EOFException;
-import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
@@ -36,7 +35,13 @@ public class TextGenerator {
     //Initialize this TextGenerator
     private void init(String file) {
         try {
-            dictionary = new RandomAccessFile(ClassLoader.getSystemResource(file).getFile(), "r");
+//            System.out.println("FILE: " + file);
+//            System.out.println("CL: " + ClassLoader.getSystemResource(file));
+//            System.out.println("CLX: " + ClassLoader.class.getResource(file));
+//            System.out.println("CL2: " + TextGenerator.class.getResource(file));
+//            System.out.println("FFS: " + ClassLoader.getSystemResource(file).getFile());
+
+            dictionary = new RandomAccessFile(TextGenerator.class.getResource("/" + file).getFile(), "r");
 
         } catch(IOException e) {
             System.err.println(e.getMessage());
