@@ -31,7 +31,6 @@ public class SerializerModel
 
     @Override
     public void serialize() {
-        System.out.println("FFS");
         for(Writer writer : fileWriter) {
             try {
                 writer.flush();

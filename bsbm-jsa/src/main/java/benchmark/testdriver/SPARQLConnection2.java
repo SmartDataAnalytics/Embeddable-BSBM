@@ -9,6 +9,7 @@ import org.aksw.jena_sparql_api.core.utils.QueryExecutionUtils;
 import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +58,7 @@ public class SPARQLConnection2 implements ServerConnection {
 
             ResultSet rs = qe.execSelect();
             heads = rs.getResultVars();
-            numResults = (int)QueryExecutionUtils.consume(qe);
+            numResults = ResultSetFormatter.consume(rs);//(int)QueryExecutionUtils.consume(qe);
 
 
             executionTimeInMs = sw.stop().elapsed(TimeUnit.MILLISECONDS);

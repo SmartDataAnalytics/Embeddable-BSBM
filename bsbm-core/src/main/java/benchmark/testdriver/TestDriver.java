@@ -102,8 +102,10 @@ public class TestDriver {
                                                                     // compared
     protected boolean rampup = false;
 
-    public TestDriver(String[] args) {
-        processProgramParameters(args);
+    public TestDriver() {
+    }
+
+    public void readTestDriverData() {
         System.out.print("Reading Test Driver data...");
         System.out.flush();
         if (doSQL)
@@ -134,6 +136,11 @@ public class TestDriver {
 
         TestDriverShutdown tds = new TestDriverShutdown(this);
         Runtime.getRuntime().addShutdownHook(tds);
+    }
+
+    public TestDriver(String[] args) {
+        processProgramParameters(args);
+        readTestDriverData();
     }
 
     public ServerConnection getServer() {
@@ -195,7 +202,10 @@ public class TestDriver {
     private List<Integer[]> getQuerymixRuns(List<String> querymixDirs) {
         List<Integer[]> runs = new ArrayList<Integer[]>();
         for (String querymixDir : querymixDirs) {
-            runs.add(getQueryMixInfo(new File(querymixDir, "querymix.txt")));
+            File hack = new File(TestDriver.class.getResource("/" + querymixDir + "/querymix.txt").getFile());
+            //hack = new File(querymixDir, "querymix.txt"));
+
+            runs.add(getQueryMixInfo(hack));
         }
         return runs;
     }
@@ -428,6 +438,7 @@ public class TestDriver {
     }
 
     private Integer[] getQueryMixInfo(File file) {
+
         System.out.println("Reading query mix file: " + file);
         ArrayList<Integer> qm = new ArrayList<Integer>();
 
@@ -752,7 +763,7 @@ public class TestDriver {
     /*
      * Process the program parameters typed on the command line.
      */
-    protected void processProgramParameters(String[] args) {
+    public void processProgramParameters(String[] args) {
         int i = 0;
         while (i < args.length) {
             try {
