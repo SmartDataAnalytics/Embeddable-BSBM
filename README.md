@@ -2,13 +2,14 @@
 This project is a fork of the [BSBM Source code (revision 81)](https://sourceforge.net/p/bsbmtools/code/81) intended for closer integration in projects.
 
 
-
-
 ## Changes over the original code base
 
 * Converted to a maven project together with deployment/release of artifacts
-* Replaced the original logger with slf4j
+* Logging:
+  * Replaced the original logger with slf4j
+  * Split the original BSBM code into [bsbm-core](bsbm-core) and [bsbm-cli](bsbm-cli) modules, where the main difference is, that the latter depends on a concrete logger implementation.
 * Enhanced code base to not require files for communication between components - this means:
+  * Moved static resources to (bsbm-core/src/main/resources)[bsbm-core/src/main/resources]
   * Added a TestDriverParams class. The Generator yields objects of this class, and the TestDriver can be configured with such an instance.
   * Added a SerializerModel class which writes the generated dataset to a Jena model (instead of a file)
 
