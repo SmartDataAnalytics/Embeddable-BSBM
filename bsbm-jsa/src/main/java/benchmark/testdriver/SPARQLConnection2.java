@@ -56,9 +56,13 @@ public class SPARQLConnection2 implements ServerConnection {
 
             Stopwatch sw = Stopwatch.createStarted();
 
-            ResultSet rs = qe.execSelect();
-            heads = rs.getResultVars();
-            numResults = ResultSetFormatter.consume(rs);//(int)QueryExecutionUtils.consume(qe);
+            if(qe.getQuery().isSelectType()) {
+                ResultSet rs = qe.execSelect();
+                heads = rs.getResultVars();
+                numResults = ResultSetFormatter.consume(rs);
+            } else {
+                numResults = (int)QueryExecutionUtils.consume(qe);
+            }
 
 
             executionTimeInMs = sw.stop().elapsed(TimeUnit.MILLISECONDS);

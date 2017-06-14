@@ -1,6 +1,7 @@
 dataset.nt
 td_data
 steadystate.tsv
+benchmark_result.xml
 
 
 *.class
