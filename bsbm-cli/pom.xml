@@ -3,7 +3,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>bsbm-core</artifactId>
+    <artifactId>bsbm-cli</artifactId>
     <packaging>jar</packaging>
 
     <parent>
@@ -14,23 +14,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.jdom</groupId>
-            <artifactId>jdom</artifactId>
-        </dependency>
-<!--
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-        </dependency>
--->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
+            <groupId>org.aksw.bsbm</groupId>
+            <artifactId>bsbm-core</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>ca.umontreal.iro</groupId>
-            <artifactId>ssj</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
         </dependency>
     </dependencies>
 

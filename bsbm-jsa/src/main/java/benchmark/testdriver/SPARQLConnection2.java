@@ -192,7 +192,6 @@ public class SPARQLConnection2 implements ServerConnection {
         logger.info(sb.toString());
     }
 
-
     private void logResultInfo(int queryNr, int queryMixRun, double timeInSeconds,
             String queryString, byte queryType,
             int resultCount) {
