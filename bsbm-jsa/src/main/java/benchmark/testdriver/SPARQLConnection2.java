@@ -35,6 +35,8 @@ public class SPARQLConnection2 implements ServerConnection {
 //        executeQuery(query.getQueryString(), queryType, query.getNr(), query.getQueryMix());
 //    }
 
+    //public static boolean suppressTimeoutRetrievalExceptionMessage = false;
+
     public QueryResult executeQuery(String queryStr, int queryType, int queryNr) {
         QueryResult result;
 
@@ -51,8 +53,16 @@ public class SPARQLConnection2 implements ServerConnection {
 
         long timeout1InMs = -1;
 
+        System.out.println("Query: " + queryStr);
         try(QueryExecution qe = qef.createQueryExecution(queryStr)) {
-            timeout1InMs = qe.getTimeout1();
+//            try {
+                timeout1InMs = qe.getTimeout1();
+//            } catch(Exception e) {
+//                if(!suppressTimeoutRetrievalExceptionMessage) {
+//                    logger.warn("QueryExecution implementation bugged as it raised an exception upon attempting to get the timeout. Further exceptions suppressed.");
+//                    suppressTimeoutRetrievalExceptionMessage = true;
+//                }
+//            }
 
             Stopwatch sw = Stopwatch.createStarted();
 
@@ -63,6 +73,8 @@ public class SPARQLConnection2 implements ServerConnection {
             } else {
                 numResults = (int)QueryExecutionUtils.consume(qe);
             }
+
+            System.out.println("RESULT ITEMS: " + numResults);
 
 
             executionTimeInMs = sw.stop().elapsed(TimeUnit.MILLISECONDS);
