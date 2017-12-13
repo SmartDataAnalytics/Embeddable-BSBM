@@ -22,13 +22,13 @@ public class TestBsbmEmbedded {
         Generator.setSerializer(serializer);
         Generator.run();
         TestDriverParams testDriverParams = Generator.getTestDriverParams();
-
+        
         Model model = serializer.getModel();
 
         QueryExecutionFactory qef = FluentQueryExecutionFactory.from(model).create();
 
         TestDriver testDriver = new TestDriver();
-        testDriver.processProgramParameters(new String[]{"http://example.org/foobar/sparql"});
+        testDriver.processProgramParameters(new String[]{"http://example.org/foobar/sparql", "-w", "0", "-runs", "1"});
         testDriver.setParameterPool(new LocalSPARQLParameterPool(testDriverParams, testDriver.getSeed()));
         testDriver.setServer(new SPARQLConnection2(qef));
 

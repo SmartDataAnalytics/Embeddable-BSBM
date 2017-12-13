@@ -2,13 +2,15 @@ package benchmark.generator;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Vector;
 
 public class TextGenerator {
-    RandomAccessFile dictionary;
+    Reader dictionary;
     private Random ranGen;
     private HashMap<String,Integer> logList;//The word list for the Test Driver
     private Vector<String> words;//For faster access, save all words in Vector-Array
@@ -41,11 +43,10 @@ public class TextGenerator {
 //            System.out.println("CL2: " + TextGenerator.class.getResource(file));
 //            System.out.println("FFS: " + ClassLoader.getSystemResource(file).getFile());
 
-            dictionary = new RandomAccessFile(TextGenerator.class.getResource("/" + file).getFile(), "r");
+            dictionary = new InputStreamReader(TextGenerator.class.getResource("/" + file).openStream(), StandardCharsets.UTF_8);
 
         } catch(IOException e) {
-            System.err.println(e.getMessage());
-            System.exit(-1);
+        	throw new RuntimeException(e);
         }
 
         System.out.print("Reading in " + file + ": ");
@@ -74,10 +75,11 @@ public class TextGenerator {
 
                 while(state!=FINISHED)
                 {
-                    try {
-                        c=(char)dictionary.readByte();
-                    } catch(EOFException eof) {
-                        state = EOF;
+                	int r = dictionary.read();
+                	if(r != -1) {
+                		c=(char)r;
+                	} else {
+                		state = EOF;
                         break;
                     }
 

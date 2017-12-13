@@ -1,10 +1,10 @@
 package benchmark.testdriver;
 
-import java.io.File;
+import java.net.URL;
 
 public class TestDriverDefaultValues {
     public static int warmups = 50;//how many Query mixes are run for warm up
-    public static File usecaseFile = new File(TestDriverDefaultValues.class.getResource("/usecases/explore/sparql.txt").getFile()); //new File("usecases/explore/sparql.txt");
+    public static URL usecaseFile = TestDriverDefaultValues.class.getResource("/usecases/explore/sparql.txt"); //new File("usecases/explore/sparql.txt");
     public static int nrRuns = 500;
     public static long seed = 808080L;
     public static String defaultGraph = null;

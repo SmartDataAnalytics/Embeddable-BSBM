@@ -26,6 +26,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -46,7 +47,7 @@ public class TestDriver {
     protected AbstractParameterPool parameterPool;// Where to get the query
                                                     // parameters from
     protected ServerConnection server;// only important for single threaded runs
-    protected File usecaseFile = TestDriverDefaultValues.usecaseFile;// where to
+    protected URL usecaseFile = TestDriverDefaultValues.usecaseFile;// where to
                                                                         // take
                                                                         // the
                                                                         // queries
@@ -174,8 +175,8 @@ public class TestDriver {
         List<String> files = new ArrayList<String>();
 
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(
-                    usecaseFile));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    usecaseFile.openStream()));
             String line = null;
             while ((line = reader.readLine()) != null) {
                 String[] querymixInfo = line.split("=");
@@ -190,8 +191,7 @@ public class TestDriver {
             }
 
         } catch (IOException e) {
-            System.err.println(e.getMessage());
-            System.exit(-1);
+        	throw new RuntimeException(e);
         }
         return files;
     }
@@ -202,7 +202,7 @@ public class TestDriver {
     private List<Integer[]> getQuerymixRuns(List<String> querymixDirs) {
         List<Integer[]> runs = new ArrayList<Integer[]>();
         for (String querymixDir : querymixDirs) {
-            File hack = new File(TestDriver.class.getResource("/" + querymixDir + "/querymix.txt").getFile());
+            URL hack = TestDriver.class.getResource("/" + querymixDir + "/querymix.txt");
             //hack = new File(querymixDir, "querymix.txt"));
 
             runs.add(getQueryMixInfo(hack));
@@ -437,14 +437,14 @@ public class TestDriver {
         return rowNames.toArray(new String[1]);
     }
 
-    private Integer[] getQueryMixInfo(File file) {
+    private Integer[] getQueryMixInfo(URL file) {
 
         System.out.println("Reading query mix file: " + file);
         ArrayList<Integer> qm = new ArrayList<Integer>();
 
         try {
             BufferedReader qmReader = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(file)));
+                    file.openStream()));
 
             StringBuffer data = new StringBuffer();
             String line = null;
@@ -461,8 +461,9 @@ public class TestDriver {
             }
             qmReader.close();
         } catch (IOException e) {
-            System.err.println("Error processing query mix file: " + file);
-            System.exit(-1);
+        	throw new RuntimeException("Error processing query mix file: " + file, e);
+//            System.err.println("Error processing query mix file: " + file);
+//            System.exit(-1);
         }
         return qm.toArray(new Integer[1]);
     }
@@ -806,7 +807,7 @@ public class TestDriver {
                 } else if (args[i].equals("-udataset")) {
                     updateFile = args[i++ + 1];
                 } else if (args[i].equals("-ucf")) {
-                    usecaseFile = new File(args[i++ + 1]);
+                    usecaseFile = new URL(args[i++ + 1]);
                 } else if (args[i].equals("-uqp")) {
                     sparqlUpdateQueryParameter = args[i++ + 1];
                 } else if (!args[i].startsWith("-")) {
