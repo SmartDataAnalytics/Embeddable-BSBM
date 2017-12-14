@@ -40,7 +40,9 @@
 			<url>http://aksw.org/ClausStadler</url>
 			<organization>AKSW</organization>
 			<organizationUrl>http://aksw.org</organizationUrl>
-			<role>packager</role>
+			<roles>
+				<role>packager</role>
+			</roles>
 		</developer>
 	</developers>
 
