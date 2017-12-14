@@ -9,6 +9,7 @@
 
 	<packaging>pom</packaging>
 
+	<name>Embeddable-BSBM</name>
 	<description>Berlin SPARQL Benchmark (BSBM)</description>
 	<url>http://wifo5-03.informatik.uni-mannheim.de/bizer/berlinsparqlbenchmark/</url>
 
@@ -32,6 +33,16 @@
 		<developerConnection>scm:git:git@github.com:SmartDataAnalytics/Embeddable-BSBM.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
+
+	<developers>
+		<developer>
+			<name>Claus Stadler</name>
+			<url>http://aksw.org/ClausStadler</url>
+			<organization>AKSW</organization>
+			<organizationUrl>http://aksw.org</organizationUrl>
+			<role>packager</role>
+		</developer>
+	</developers>
 
 	<properties>
 		<jena-sparql-api.version>3.5.0-2</jena-sparql-api.version>
