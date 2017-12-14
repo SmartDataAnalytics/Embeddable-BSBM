@@ -27,14 +27,14 @@
 	</licenses>
 
 	<scm>
-		<url>https://github.com/AKSW/spring-json</url>
-		<connection>scm:git:git://github.com/AKSW/spring-json.git</connection>
-		<developerConnection>scm:git:git@github.com:AKSW/spring-json.git</developerConnection>
+		<url>https://github.com/SmartDataAnalytics/Embeddable-BSBM</url>
+		<connection>scm:git:git://github.com/SmartDataAnalytics/Embeddable-BSBM.git</connection>
+		<developerConnection>scm:git:git@github.com:SmartDataAnalytics/Embeddable-BSBM.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 
 	<properties>
-		<jena-sparql-api.version>3.5.0-1</jena-sparql-api.version>
+		<jena-sparql-api.version>3.5.0-2</jena-sparql-api.version>
 
 		<!-- Project Settings -->
 		<maven.compiler.source>1.7</maven.compiler.source>
