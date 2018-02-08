@@ -47,17 +47,16 @@
 	</developers>
 
 	<properties>
-		<jena-sparql-api.version>3.5.0-2</jena-sparql-api.version>
+		<jena-sparql-api.version>3.6.0-2-SNAPSHOT</jena-sparql-api.version>
 
 		<!-- Project Settings -->
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 		<java.version.javadoc>http://java.sun.com/javase/6/docs/api/</java.version.javadoc>
 		<file.encoding>UTF-8</file.encoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<gpg.keyname>AKSW</gpg.keyname>
-		<slf4j.version>1.7.25</slf4j.version>
 	</properties>
 
 	<build>
@@ -165,13 +164,13 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>${slf4j.version}</version>
+				<version>1.7.25</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
-				<version>${slf4j.version}</version>
+				<version>1.7.25</version>
 			</dependency>
 
 			<dependency>
@@ -198,6 +197,18 @@
 				<groupId>org.aksw.jena-sparql-api</groupId>
 				<artifactId>jena-sparql-api-core</artifactId>
 				<version>${jena-sparql-api.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.aksw.jena-sparql-api</groupId>
+				<artifactId>jena-sparql-api-mapper</artifactId>
+				<version>${jena-sparql-api.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.aksw.beast</groupId>
+				<artifactId>beast-core</artifactId>
+				<version>1.0.0-SNAPSHOT</version>
 			</dependency>
 
 			<dependency>
