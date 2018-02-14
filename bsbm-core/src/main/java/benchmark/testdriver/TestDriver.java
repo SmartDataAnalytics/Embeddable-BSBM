@@ -507,7 +507,7 @@ public class TestDriver {
 
     
     public void run() {
-    	BsbmResult tmp = runCore();
+    	BsbmResult tmp = runCore("http://example.org/resource/default-bsbm-experiment");
     	
     	// TODO Ideally create outputs from the result model; but I am not going to touch the old working code
     	
@@ -524,7 +524,7 @@ public class TestDriver {
 
     }
     
-    public BsbmResult runCore() {
+    public BsbmResult runCore(String experimentBaseIri) {
         int qmsPerPeriod = TestDriverDefaultValues.qmsPerPeriod;
         int qmsCounter = 0;
         int periodCounter = 0;
@@ -595,7 +595,7 @@ public class TestDriver {
             queryMix.finishRun();
         }
         
-        BsbmResult result = createResult(true);
+        BsbmResult result = createResult(true, experimentBaseIri);
         
         if(useMeasurementFile) {
         	IOUtils.closeQuietly(measurementFile);
@@ -860,11 +860,13 @@ public class TestDriver {
     /*
      * Get Result Object
      */
-    public BsbmResult createResult(boolean all) {
+    public BsbmResult createResult(boolean all, String experimentBaseIri) {
 
-    	BsbmResult result = new BsbmResult();
+    	BsbmResult result = new BsbmResult()
+        		.setExperimentBaseIri(experimentBaseIri);
     	
     	QueryMixStats queryMixStats = new QueryMixStats()
+    		.setExperimentBaseIri(experimentBaseIri)
     		.setScaleFactor(parameterPool.getScalefactor())
     		.setWarmups(warmups)
     		.setNrThreads(multithreading ? nrThreads : 1)
@@ -903,6 +905,7 @@ public class TestDriver {
 
             	if (queries[i] != null) {
 	            	QueryStats stats = new QueryStats()
+	            		.setExperimentBaseIri(experimentBaseIri)
 	            		.setId("" + (i + 1))
 	            		.setExecuteCount(nrq[i])
 	            		.setAvgQet(qavga[i])

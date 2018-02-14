@@ -2,15 +2,20 @@ package benchmark.testdriver.model;
 
 import org.aksw.jena_sparql_api.mapper.annotation.DefaultIri;
 import org.aksw.jena_sparql_api.mapper.annotation.IriNs;
+import org.aksw.jena_sparql_api.mapper.annotation.IriType;
 import org.aksw.jena_sparql_api.mapper.annotation.RdfType;
 
 @RdfType("bsbm:QueryStats")
-@DefaultIri("bsbm:query-#{id}")
+@DefaultIri("#{experimentBaseIri}query-#{id}")
 public class QueryStats {
 	
 	@IriNs("bsbm")
 	protected String id;
 
+	@IriNs("bsbm")
+	@IriType
+	protected String experimentBaseIri;	
+	
 	@IriNs("bsbm")
 	protected int executeCount;
 
@@ -50,6 +55,15 @@ public class QueryStats {
 		return this;
 	}
 	
+	public String getExperimentBaseIri() {
+		return experimentBaseIri;
+	}
+
+	public QueryStats setExperimentBaseIri(String experimentBaseIri) {
+		this.experimentBaseIri = experimentBaseIri;
+		return this;
+	}
+
 	public int getExecuteCount() {
 		return executeCount;
 	}

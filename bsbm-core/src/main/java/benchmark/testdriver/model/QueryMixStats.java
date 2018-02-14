@@ -2,12 +2,17 @@ package benchmark.testdriver.model;
 
 import org.aksw.jena_sparql_api.mapper.annotation.DefaultIri;
 import org.aksw.jena_sparql_api.mapper.annotation.IriNs;
+import org.aksw.jena_sparql_api.mapper.annotation.IriType;
 import org.aksw.jena_sparql_api.mapper.annotation.RdfType;
 
 @RdfType("bsbm:QueryMixStats")
-@DefaultIri("bsbm:bar")
+@DefaultIri("#{experimentBaseIri}queryMix")
 public class QueryMixStats {
 
+	@IriNs("bsbm")
+	@IriType
+	protected String experimentBaseIri;
+	
 	@IriNs("bsbm")
 	protected Integer scaleFactor;
 	
@@ -44,7 +49,16 @@ public class QueryMixStats {
 	
 	@IriNs("bsbm")
 	protected double queryMixGeometryMean;
-	
+		
+	public String getExperimentBaseIri() {
+		return experimentBaseIri;
+	}
+
+	public QueryMixStats setExperimentBaseIri(String experimentBaseIri) {
+		this.experimentBaseIri = experimentBaseIri;
+		return this;
+	}
+
 	public Integer getScaleFactor() {
 		return scaleFactor;
 	}

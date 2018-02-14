@@ -26,9 +26,8 @@
 
 		<dependency>
 			<groupId>org.aksw.beast</groupId>
-			<artifactId>beast-core</artifactId>
+			<artifactId>beast-bundle</artifactId>
 		</dependency>
-
 
 		<dependency>
 			<groupId>junit</groupId>

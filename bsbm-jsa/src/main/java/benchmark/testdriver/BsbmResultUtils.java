@@ -1,4 +1,4 @@
-package benchmark.testdriver.model;
+package benchmark.testdriver;
 
 import javax.persistence.EntityManager;
 
@@ -7,6 +7,8 @@ import org.aksw.jena_sparql_api.update.FluentSparqlService;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
+
+import benchmark.testdriver.model.BsbmResult;
 
 public class BsbmResultUtils {
 	public static Model toModel(BsbmResult stats) {
