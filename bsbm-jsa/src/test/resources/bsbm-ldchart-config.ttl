@@ -34,6 +34,7 @@ eg:exp1-series
   cv:series "some-triple-store" ;
   cv:valueProperty <http://bsbm.org/avgQet> ;
   cv:sliceType bsbm:QueryStats ;
-  cv:sliceProperty bsbm:experimentBaseIri ;
-  bsbm:experimentId <http://example.org/my-bsbm-experiment> ;
+# Added by application
+#  cv:sliceProperty bsbm:experimentBaseIri ;
+#  bsbm:experimentId <http://example.org/my-bsbm-experiment> ;
   .
