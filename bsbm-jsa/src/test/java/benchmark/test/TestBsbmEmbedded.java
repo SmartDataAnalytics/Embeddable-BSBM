@@ -57,10 +57,10 @@ public class TestBsbmEmbedded {
     	List<Entry<StatisticalBarChart, Model>> chartSpecs = ChartTransform.transform(chartModel);
     	
     	for(Entry<StatisticalBarChart, Model> chartSpec : chartSpecs) {
-            CategoryChart xChart = ChartModelConfigurerXChart.toChart(chartSpec.getValue(), chartSpec.getKey());
+//            CategoryChart xChart = ChartModelConfigurerXChart.toChart(chartSpec.getValue(), chartSpec.getKey());
 
-            new SwingWrapper<CategoryChart>(xChart).displayChart();
-            System.in.read();
+//            new SwingWrapper<CategoryChart>(xChart).displayChart();
+//            System.in.read();
     	}
     }
 }
