@@ -1,34 +1,25 @@
 package benchmark.test;
 
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Map.Entry;
 
 import org.aksw.beast.chart.ChartTransform;
 import org.aksw.beast.chart.model.StatisticalBarChart;
-import org.aksw.beast.viz.xchart.ChartModelConfigurerXChart;
-import org.aksw.beast.vocabs.CV;
-import org.aksw.beast.vocabs.IV;
 import org.aksw.jena_sparql_api.core.FluentQueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
+import org.aksw.jena_sparql_api.stmt.SparqlQueryParserImpl;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.RDFFormat;
-import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
-import org.knowm.xchart.CategoryChart;
-import org.knowm.xchart.SwingWrapper;
 
 import benchmark.common.TestDriverParams;
 import benchmark.generator.Generator;
 import benchmark.serializer.SerializerModel;
-import benchmark.testdriver.BsbmResultUtils;
 import benchmark.testdriver.LocalSPARQLParameterPool;
 import benchmark.testdriver.SPARQLConnection2;
 import benchmark.testdriver.TestDriver;
 import benchmark.testdriver.TestDriverUtils;
-import benchmark.testdriver.model.BsbmResult;
 
 public class TestBsbmEmbedded {
 
@@ -42,8 +33,29 @@ public class TestBsbmEmbedded {
         TestDriverParams testDriverParams = Generator.getTestDriverParams();
         
         Model model = serializer.getModel();
-
         QueryExecutionFactory qef = FluentQueryExecutionFactory.from(model).create();
+
+        
+        boolean logQueriesToFile = false;
+        PrintStream out = null;
+        if(logQueriesToFile) {
+	        PrintStream o = out = new PrintStream(new FileOutputStream("/tmp/bsbm.sparql"));
+	        
+	        int i[] = {0};
+	        qef = FluentQueryExecutionFactory.from(qef)
+	        		.config()
+	        			.withQueryTransform(q -> {
+	        				o.println("# Query " + (++i[0]));
+	        				o.println(q);
+	        				o.println();
+	        				o.println();
+	        				o.println();
+	        				
+	        				return q;
+	        			})
+	        			.withParser(SparqlQueryParserImpl.create())
+	        		.end().create();
+        }
 
         TestDriver testDriver = new TestDriver();
         testDriver.processProgramParameters(new String[]{"http://example.org/foobar/sparql", "-w", "0", "-runs", "1"});
@@ -62,5 +74,11 @@ public class TestBsbmEmbedded {
 //            new SwingWrapper<CategoryChart>(xChart).displayChart();
 //            System.in.read();
     	}
+    	
+    	if(logQueriesToFile) {
+    		out.flush();
+    		out.close();
+    	}
+
     }
 }
