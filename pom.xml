@@ -47,7 +47,7 @@
 	</developers>
 
 	<properties>
-		<jena-sparql-api.version>3.6.0-2-SNAPSHOT</jena-sparql-api.version>
+		<jena-sparql-api.version>3.6.0-3-SNAPSHOT</jena-sparql-api.version>
 
 		<!-- Project Settings -->
 		<maven.compiler.source>1.8</maven.compiler.source>
