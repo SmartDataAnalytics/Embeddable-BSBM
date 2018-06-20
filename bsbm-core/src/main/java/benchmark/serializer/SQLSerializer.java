@@ -21,21 +21,29 @@ import benchmark.vocabulary.ISO3166;
 
 public class SQLSerializer implements Serializer {
 	private File outputDir;
+	private boolean dataOnly;
+	
+	
 	private boolean forwardChaining;
 	private long nrTriples;
 	private SQLTables tables;
 	private String database;
 	private static final int insertNumber = 200;//Number of insert tuples per insert operation
 	
-	public SQLSerializer(String directory, boolean forwardChaining, String database) {
-		outputDir = new File(directory);
-		outputDir.mkdirs();
+	public SQLSerializer(File outputDir, boolean dataOnly, boolean forwardChaining, String database) {
+		this.outputDir = outputDir;
+		this.outputDir.mkdirs();
+		this.dataOnly = dataOnly;
 		
 		this.forwardChaining = forwardChaining;
 		nrTriples = 0l;
 		this.database = database;
 		
 		initTables();
+	}
+
+	public SQLSerializer(String directory, boolean forwardChaining, String database) {
+		this(new File(directory), false, forwardChaining, database);
 	}
 	
 	public void gatherData(ObjectBundle bundle) {
@@ -657,24 +665,29 @@ public class SQLSerializer implements Serializer {
 		
 		private String createTable(String database, String tableName, String tableDefinition) {
 			StringBuffer sb = new StringBuffer(100);
-			sb.append("CREATE DATABASE IF NOT EXISTS `" + database + "` DEFAULT CHARACTER SET utf8;\n\n");
-			sb.append("USE `" + database + "`;\n\n");
-			sb.append("DROP TABLE IF EXISTS `" + tableName + "`;\n");
-			sb.append("CREATE TABLE `" + tableName + "` (\n");
-			sb.append(tableDefinition);
-			sb.append(") ENGINE=InnoDB DEFAULT CHARSET=utf8;\n\n");
-			sb.append("LOCK TABLES `" + tableName + "` WRITE;\n");
-			sb.append("ALTER TABLE `" + tableName + "` DISABLE KEYS;\n\n");
+			if(!dataOnly) {
+				sb.append("CREATE DATABASE IF NOT EXISTS `" + database + "` DEFAULT CHARACTER SET utf8;\n\n");
+				sb.append("USE `" + database + "`;\n\n");
+				sb.append("DROP TABLE IF EXISTS `" + tableName + "`;\n");
+				sb.append("CREATE TABLE `" + tableName + "` (\n");
+				sb.append(tableDefinition);
+				sb.append(") ENGINE=InnoDB DEFAULT CHARSET=utf8;\n\n");
+				sb.append("LOCK TABLES `" + tableName + "` WRITE;\n");
+				sb.append("ALTER TABLE `" + tableName + "` DISABLE KEYS;\n\n");
+			}
 			
 			return sb.toString();
 		}
 		
 		private String endTable(int counter, String tableName) {
 			String s = "";
-			if(counter>0)
-				s = ";";
-			
-			s+="\n\nALTER TABLE `" + tableName + "` ENABLE KEYS;\nUNLOCK TABLES;";
+
+			if(!dataOnly) {
+				if(counter>0)
+					s = ";";
+				
+				s+="\n\nALTER TABLE `" + tableName + "` ENABLE KEYS;\nUNLOCK TABLES;";
+			}
 			
 			return s;
 		}

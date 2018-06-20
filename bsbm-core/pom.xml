@@ -8,30 +8,41 @@
     <parent>
         <groupId>org.aksw.bsbm</groupId>
         <artifactId>bsbm-parent</artifactId>
-        <version>3.1.1</version>
+        <version>3.1.2</version>
     </parent>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.jdom</groupId>
-            <artifactId>jdom</artifactId>
-        </dependency>
-<!--
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-        </dependency>
--->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
+	<dependencies>
+		<dependency>
+			<groupId>org.jdom</groupId>
+			<artifactId>jdom</artifactId>
+		</dependency>
+		<!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-log4j12</artifactId> 
+			</dependency> -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
 
-        <dependency>
-            <groupId>ca.umontreal.iro</groupId>
-            <artifactId>ssj</artifactId>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>ca.umontreal.iro</groupId>
+			<artifactId>ssj</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.aksw.jena-sparql-api</groupId>
+			<artifactId>jena-sparql-api-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.aksw.jena-sparql-api</groupId>
+			<artifactId>jena-sparql-api-mapper</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.aksw.beast</groupId>
+			<artifactId>beast-core</artifactId>
+		</dependency>
+	</dependencies>
 
 </project>
 

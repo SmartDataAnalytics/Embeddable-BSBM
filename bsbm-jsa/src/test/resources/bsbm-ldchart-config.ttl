@@ -1,0 +1,40 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+@prefix cv: <http://aksw.org/chart-vocab/> .
+@prefix iv: <http://iv.aksw.org/vocab#> .
+@prefix iguana: <http://iguana.aksw.org/ontology#> .
+
+@prefix bsbm: <http://bsbm.org/> .
+@prefix eg: <http://example.org/> .
+
+
+eg:exp1
+  a cv:StatisticalBarChart ;
+  rdfs:label "Performance Histogram" ;
+  cv:xAxisTitle "Workload" ;
+  cv:yAxisTitle "Time (s)" ;
+  cv:width 1650 ;
+  cv:height 1050 ;
+  cv:style eg:exp1-style ;
+  cv:series eg:exp1-series ;
+  .
+
+eg:exp1-style
+  a cv:ChartStyle ;
+  cv:legendPosition "InsideNW" ;
+  cv:yAxisLogarithmic true ;
+  cv:yAxisTicksVisible true ;
+  cv:xAxisLabelRotation 45 ;
+  cv:yAxisDecimalPattern "###,###,###,###,###.#####" ;
+  .  
+        
+eg:exp1-series 
+  a cv:ConceptBasedSeries ;
+  cv:series "some-triple-store" ;
+  cv:valueProperty <http://bsbm.org/avgQet> ;
+  cv:sliceType bsbm:QueryStats ;
+# Added by application
+#  cv:sliceProperty bsbm:experimentBaseIri ;
+#  bsbm:experimentId <http://example.org/my-bsbm-experiment> ;
+  .

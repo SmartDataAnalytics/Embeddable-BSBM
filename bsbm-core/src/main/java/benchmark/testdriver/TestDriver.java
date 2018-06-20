@@ -21,7 +21,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,10 +33,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import benchmark.qualification.QueryResult;
+import benchmark.testdriver.model.BsbmResult;
+import benchmark.testdriver.model.QueryMixStats;
+import benchmark.testdriver.model.QueryStats;
 
 public class TestDriver {
     protected QueryMix queryMix;// The Benchmark Querymix
@@ -502,20 +505,43 @@ public class TestDriver {
         return ignoreQueries;
     }
 
+    
     public void run() {
+    	BsbmResult tmp = runCore("http://example.org/resource/default-bsbm-experiment");
+    	
+    	// TODO Ideally create outputs from the result model; but I am not going to touch the old working code
+    	
+        logger.info(printResults(true));    	
+        
+        try {
+            FileWriter resultWriter = new FileWriter(xmlResultFile);
+            resultWriter.append(printXMLResults(true));
+            resultWriter.flush();
+            resultWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+    
+    public BsbmResult runCore(String experimentBaseIri) {
         int qmsPerPeriod = TestDriverDefaultValues.qmsPerPeriod;
         int qmsCounter = 0;
         int periodCounter = 0;
         double periodRuntime = 0;
-        BufferedWriter measurementFile = null;
-        try {
-            measurementFile = new BufferedWriter(new FileWriter(
-                    "steadystate.tsv"));
-        } catch (IOException e) {
-            System.err.println("Could not create file steadystate.tsv!");
-            System.exit(-1);
-        }
 
+        boolean useMeasurementFile = false;
+        BufferedWriter measurementFile = null;
+        if(useMeasurementFile) {
+	        try {
+	            measurementFile = new BufferedWriter(new FileWriter(
+	                    "steadystate.tsv"));
+	        } catch (IOException e) {
+	            System.err.println("Could not create file steadystate.tsv!");
+	            System.exit(-1);
+	        }
+        }
+        
         for (int nrRun = -warmups; nrRun < nrRuns; nrRun++) {
             long startTime = System.currentTimeMillis();
             queryMix.setRun(nrRun);
@@ -548,9 +574,11 @@ public class TestDriver {
             if (qmsCounter == qmsPerPeriod) {
                 periodCounter++;
                 try {
-                    measurementFile.append(periodCounter + "\t" + periodRuntime
-                            + "\n");
-                    measurementFile.flush();
+                	if(useMeasurementFile) {
+	                    measurementFile.append(periodCounter + "\t" + periodRuntime
+	                            + "\n");
+	                    measurementFile.flush();
+                	}
                 } catch (IOException e) {
                     e.printStackTrace();
                     System.exit(-1);
@@ -566,17 +594,14 @@ public class TestDriver {
                     + (System.currentTimeMillis() - startTime) + "ms");
             queryMix.finishRun();
         }
-        logger.info(printResults(true));
-
-        try {
-            FileWriter resultWriter = new FileWriter(xmlResultFile);
-            resultWriter.append(printXMLResults(true));
-            resultWriter.flush();
-            resultWriter.close();
-            measurementFile.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        
+        BsbmResult result = createResult(true, experimentBaseIri);
+        
+        if(useMeasurementFile) {
+        	IOUtils.closeQuietly(measurementFile);
         }
+
+        return result;
     }
 
     public void runQualification() {
@@ -830,6 +855,80 @@ public class TestDriver {
         }
     }
 
+    
+    
+    /*
+     * Get Result Object
+     */
+    public BsbmResult createResult(boolean all, String experimentBaseIri) {
+
+    	BsbmResult result = new BsbmResult()
+        		.setExperimentBaseIri(experimentBaseIri);
+    	
+    	QueryMixStats queryMixStats = new QueryMixStats()
+    		.setExperimentBaseIri(experimentBaseIri)
+    		.setScaleFactor(parameterPool.getScalefactor())
+    		.setWarmups(warmups)
+    		.setNrThreads(multithreading ? nrThreads : 1)
+    		.setSeed(seed)
+    		.setQueryMixRuns(queryMix.getQueryMixRuns())
+    		.setMinQueryMixRuntime(queryMix.getMinQueryMixRuntime())
+    		.setMaxQueryMixRuntime(queryMix.getMaxQueryMixRuntime())    		
+    		.setTotalRuntime(queryMix.getTotalRuntime())
+    		.setActualTotalRuntime(multithreading ? queryMix.getMultiThreadRuntime() : queryMix.getTotalRuntime())
+    		.setQmph(multithreading ? queryMix.getMultiThreadQmpH() : queryMix.getQmph())
+    		.setCqet(queryMix.getCQET())
+    		.setQueryMixGeometryMean(queryMix.getQueryMixGeometricMean())
+    		;
+        
+    	result.setQueryMixStats(queryMixStats);
+    	
+    	double singleMultiRatio = multithreading
+    				? queryMix.getTotalRuntime() / queryMix.getMultiThreadRuntime()
+    				: 1;
+
+        if (all) {
+        	List<QueryStats> queryStats = new ArrayList<>();
+
+        	// Print per query statistics
+            Query[] queries = queryMix.getQueries();
+            double[] qmin = queryMix.getQmin();
+            double[] qmax = queryMix.getQmax();
+            double[] qavga = queryMix.getAqet();
+            double[] avgResults = queryMix.getAvgResults();
+            double[] qavgg = queryMix.getGeoMean();
+            int[] qTimeout = queryMix.getTimeoutsPerQuery();
+            int[] minResults = queryMix.getMinResults();
+            int[] maxResults = queryMix.getMaxResults();
+            int[] nrq = queryMix.getRunsPerQuery();
+            for (int i = 0; i < qmin.length; i++) {
+
+            	if (queries[i] != null) {
+	            	QueryStats stats = new QueryStats()
+	            		.setExperimentBaseIri(experimentBaseIri)
+	            		.setId("" + (i + 1))
+	            		.setExecuteCount(nrq[i])
+	            		.setAvgQet(qavga[i])
+	            		.setGeometricMean(qavgg[i])
+	            		.setFrequency(singleMultiRatio / qavga[i])
+	            		.setMinQet(qmin[i])
+	            		.setMaxQet(qmax[i])
+	            		.setAvgResults(avgResults[i])
+	            		.setMinResults(minResults[i])
+	            		.setMaxResults(maxResults[i])
+	            		.setNumTimeouts(qTimeout[i]);
+
+	            	queryStats.add(stats);
+            	}
+            }
+            
+            result.setQueryStats(queryStats);
+        }
+
+        return result;
+    }
+
+    
     /*
      * Get Result String
      */
