@@ -1,19 +1,20 @@
 package benchmark.testdriver;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
-import org.aksw.jena_sparql_api.core.utils.QueryExecutionUtils;
+import org.apache.jena.ext.com.google.common.base.Stopwatch;
+import org.apache.jena.ext.com.google.common.collect.Iterators;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFormatter;
+import org.apache.jena.rdfconnection.SparqlQueryConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Stopwatch;
 
 import benchmark.qualification.QueryResult;
 
@@ -21,11 +22,51 @@ public class SPARQLConnection2 implements ServerConnection {
 
     private static final Logger logger = LoggerFactory.getLogger(SPARQLConnection2.class);
 
-    protected QueryExecutionFactory qef;
+    protected SparqlQueryConnection conn;
 
 
-    public SPARQLConnection2(QueryExecutionFactory qef) {
-        this.qef = qef;
+    public SPARQLConnection2(SparqlQueryConnection qef) {
+        this.conn = qef;
+    }
+    
+    public static long consume(QueryExecution qe) {
+       	org.apache.jena.query.Query query = qe.getQuery();
+        assert query != null : "QueryExecution did not tell us which query it is bound to - query was null";
+        long result = consume(qe, query);
+        return result;
+    }
+    
+    public static long consume(QueryExecution qe, org.apache.jena.query.Query query) {
+        int queryType = query.getQueryType();
+
+        long result = consume(qe, queryType);
+        return result;
+    }
+
+    public static long consume(QueryExecution qe, int queryType) {
+        long result;
+        switch (queryType) {
+        case org.apache.jena.query.Query.QueryTypeAsk:
+            qe.execAsk();
+            result = 1;
+            break;
+        case org.apache.jena.query.Query.QueryTypeConstruct:
+            Iterator<Triple> itC = qe.execConstructTriples();
+            result = Iterators.size(itC);
+            break;
+        case org.apache.jena.query.Query.QueryTypeDescribe:
+            Iterator<Triple> itD = qe.execDescribeTriples();
+            result = Iterators.size(itD);
+            break;
+        case org.apache.jena.query.Query.QueryTypeSelect:
+            ResultSet rs = qe.execSelect();
+            result = ResultSetFormatter.consume(rs);
+            break;
+        default:
+            throw new RuntimeException("Unknown query type - should not happen: queryType = " + queryType);
+        }
+
+        return result;
     }
 
     /*
@@ -54,7 +95,7 @@ public class SPARQLConnection2 implements ServerConnection {
         long timeout1InMs = -1;
 
         System.out.println("Query: " + queryStr);
-        try(QueryExecution qe = qef.createQueryExecution(queryStr)) {
+        try(QueryExecution qe = conn.query(queryStr)) {
 //            try {
                 timeout1InMs = qe.getTimeout1();
 //            } catch(Exception e) {
@@ -71,7 +112,7 @@ public class SPARQLConnection2 implements ServerConnection {
                 heads = rs.getResultVars();
                 numResults = ResultSetFormatter.consume(rs);
             } else {
-                numResults = (int)QueryExecutionUtils.consume(qe);
+            	numResults = (int)consume(qe);
             }
 
             System.out.println("RESULT ITEMS: " + numResults);
@@ -191,7 +232,7 @@ public class SPARQLConnection2 implements ServerConnection {
     @Override
     public void close() {
         try {
-            qef.close();
+            conn.close();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

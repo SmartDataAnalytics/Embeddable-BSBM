@@ -25,8 +25,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.aksw.beast</groupId>
-			<artifactId>beast-bundle</artifactId>
+			<groupId>org.aksw.jena-sparql-api</groupId>
+			<artifactId>jena-sparql-api-mapper-core</artifactId>
 		</dependency>
 
 		<dependency>

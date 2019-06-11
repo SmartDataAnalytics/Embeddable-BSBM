@@ -1,13 +1,10 @@
 package benchmark.testdriver;
 
-import org.aksw.beast.vocabs.CV;
-import org.aksw.beast.vocabs.IV;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
-import org.apache.jena.vocabulary.RDF;
 
 import benchmark.testdriver.model.BsbmResult;
 
@@ -25,11 +22,11 @@ public class TestDriverUtils {
         Model chartModel = RDFDataMgr.loadModel("bsbm-ldchart-config.ttl");
         
         // Configure the chart for the current experiment
-        chartModel
-        	.listSubjectsWithProperty(RDF.type, RDF.type)        	
-        	.forEachRemaining(r -> r
-        			.addProperty(CV.sliceProperty, IV.experiment)
-        			.addProperty(IV.experiment, experiment));
+//        chartModel
+//        	.listSubjectsWithProperty(RDF.type, RDF.type)        	
+//        	.forEachRemaining(r -> r
+//        			.addProperty(CV.sliceProperty, IV.experiment)
+//        			.addProperty(IV.experiment, experiment));
                 
         chartModel.add(statsModel);
         

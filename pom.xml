@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -47,7 +48,11 @@
 	</developers>
 
 	<properties>
-		<jena-sparql-api.version>3.6.0-3-SNAPSHOT</jena-sparql-api.version>
+		<jena.version>3.11.0</jena.version>
+		<jsa.subversion>1-SNAPSHOT</jsa.subversion>
+
+		<jsa.version>${jena.version}-${jsa.subversion}</jsa.version>
+
 
 		<!-- Project Settings -->
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -194,15 +199,27 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.aksw.jena-sparql-api</groupId>
-				<artifactId>jena-sparql-api-core</artifactId>
-				<version>${jena-sparql-api.version}</version>
+				<groupId>org.apache.jena</groupId>
+				<artifactId>jena-rdfconnection</artifactId>
+				<version>${jena.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.aksw.jena-sparql-api</groupId>
-				<artifactId>jena-sparql-api-mapper</artifactId>
-				<version>${jena-sparql-api.version}</version>
+				<artifactId>jena-sparql-api-core</artifactId>
+				<version>${jsa.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.aksw.jena-sparql-api</groupId>
+				<artifactId>jena-sparql-api-mapper-annotations</artifactId>
+				<version>${jsa.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.aksw.jena-sparql-api</groupId>
+				<artifactId>jena-sparql-api-mapper-core</artifactId>
+				<version>${jsa.version}</version>
 			</dependency>
 
 
@@ -214,7 +231,7 @@
 
 			<dependency>
 				<groupId>org.aksw.beast</groupId>
-				<artifactId>beast-bundle</artifactId>
+				<artifactId>beast-viz-xchart</artifactId>
 				<version>1.0.0-SNAPSHOT</version>
 			</dependency>
 
