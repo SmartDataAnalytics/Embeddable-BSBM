@@ -11,6 +11,12 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 
+/**
+ * This class was not part of the bsbm 3.1 code base
+ * 
+ * @author Claus Stadler 2019
+ *
+ */
 public class SerializerModel
     extends NTriples
 {
