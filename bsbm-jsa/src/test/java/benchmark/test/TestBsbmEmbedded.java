@@ -2,13 +2,10 @@ package benchmark.test;
 
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.util.List;
-import java.util.Map.Entry;
 
-import org.aksw.beast.chart.ChartTransform;
-import org.aksw.beast.chart.model.StatisticalBarChart;
 import org.aksw.jena_sparql_api.core.FluentQueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
+import org.aksw.jena_sparql_api.core.connection.SparqlQueryConnectionJsa;
 import org.aksw.jena_sparql_api.stmt.SparqlQueryParserImpl;
 import org.apache.jena.rdf.model.Model;
 import org.junit.Test;
@@ -60,25 +57,26 @@ public class TestBsbmEmbedded {
         TestDriver testDriver = new TestDriver();
         testDriver.processProgramParameters(new String[]{"http://example.org/foobar/sparql", "-w", "0", "-runs", "1"});
         testDriver.setParameterPool(new LocalSPARQLParameterPool(testDriverParams, testDriver.getSeed()));
-        testDriver.setServer(new SPARQLConnection2(qef));
+        testDriver.setServer(new SPARQLConnection2(new SparqlQueryConnectionJsa(qef)));
 
         testDriver.init();
         
         Model chartModel = TestDriverUtils.runWithCharts(testDriver, "http://example.org/my-bsbm-experiment/");
-        
-    	List<Entry<StatisticalBarChart, Model>> chartSpecs = ChartTransform.transform(chartModel);
-    	
-    	for(Entry<StatisticalBarChart, Model> chartSpec : chartSpecs) {
-//            CategoryChart xChart = ChartModelConfigurerXChart.toChart(chartSpec.getValue(), chartSpec.getKey());
 
-//            new SwingWrapper<CategoryChart>(xChart).displayChart();
-//            System.in.read();
-    	}
-    	
-    	if(logQueriesToFile) {
-    		out.flush();
-    		out.close();
-    	}
+        
+//    	List<Entry<StatisticalBarChartImpl, Model>> chartSpecs = ChartTransform.transform(chartModel);
+//    	
+//    	for(Entry<StatisticalBarChartImpl, Model> chartSpec : chartSpecs) {
+////            CategoryChart xChart = ChartModelConfigurerXChart.toChart(chartSpec.getValue(), chartSpec.getKey());
+//
+////            new SwingWrapper<CategoryChart>(xChart).displayChart();
+////            System.in.read();
+//    	}
+//    	
+//    	if(logQueriesToFile) {
+//    		out.flush();
+//    		out.close();
+//    	}
 
     }
 }

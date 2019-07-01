@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.aksw.bsbm</groupId>
         <artifactId>bsbm-parent</artifactId>
-        <version>3.1.2</version>
+        <version>3.1.3</version>
     </parent>
 
 	<dependencies>
@@ -29,10 +29,21 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.aksw.jena-sparql-api</groupId>
-			<artifactId>jena-sparql-api-core</artifactId>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-rdfconnection</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.aksw.jena-sparql-api</groupId>
+			<artifactId>jena-sparql-api-mapper-annotations</artifactId>
+		</dependency>
+
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.aksw.jena-sparql-api</groupId> -->
+<!-- 			<artifactId>jena-sparql-api-core</artifactId> -->
+<!-- 		</dependency> -->
+
+<!--
 		<dependency>
 			<groupId>org.aksw.jena-sparql-api</groupId>
 			<artifactId>jena-sparql-api-mapper</artifactId>
@@ -42,6 +53,7 @@
 			<groupId>org.aksw.beast</groupId>
 			<artifactId>beast-core</artifactId>
 		</dependency>
+-->
 	</dependencies>
 
 </project>
