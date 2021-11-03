@@ -6,7 +6,7 @@
 
 	<groupId>org.aksw.bsbm</groupId>
 	<artifactId>bsbm-parent</artifactId>
-	<version>3.1.5-SNAPSHOT</version>
+	<version>3.1.6-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 
@@ -17,7 +17,7 @@
 	<modules>
 		<module>bsbm-core</module>
 		<module>bsbm-cli</module>
-		<module>bsbm-jsa</module>
+		<module>bsbm-jenax</module>
 	</modules>
 
 	<licenses>
@@ -48,10 +48,8 @@
 	</developers>
 
 	<properties>
-		<jena.version>3.13.1</jena.version>
-		<jsa.subversion>1</jsa.subversion>
-
-		<jsa.version>${jena.version}-${jsa.subversion}</jsa.version>
+		<jena.version>4.3.0-SNAPSHOT</jena.version>
+		<jsa.version>4.3.0-1-SNAPSHOT</jsa.version>
 
 		<!-- Project Settings -->
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -204,20 +202,20 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.aksw.jena-sparql-api</groupId>
-				<artifactId>jena-sparql-api-core</artifactId>
+				<groupId>org.aksw.jenax</groupId>
+				<artifactId>jenax-rx-dataaccess</artifactId>
 				<version>${jsa.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.aksw.jena-sparql-api</groupId>
-				<artifactId>jena-sparql-api-mapper-annotations</artifactId>
+				<groupId>org.aksw.jenax</groupId>
+				<artifactId>jenax-annotations-reprogen</artifactId>
 				<version>${jsa.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.aksw.jena-sparql-api</groupId>
-				<artifactId>jena-sparql-api-mapper-core</artifactId>
+				<groupId>org.aksw.jenax</groupId>
+				<artifactId>jenax-reprogen-jpa</artifactId>
 				<version>${jsa.version}</version>
 			</dependency>
 

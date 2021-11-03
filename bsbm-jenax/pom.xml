@@ -3,13 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>bsbm-jsa</artifactId>
+	<artifactId>bsbm-jenax</artifactId>
 	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>org.aksw.bsbm</groupId>
 		<artifactId>bsbm-parent</artifactId>
-		<version>3.1.5-SNAPSHOT</version>
+		<version>3.1.6-SNAPSHOT</version>
 	</parent>
 
 
@@ -20,13 +20,13 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.aksw.jena-sparql-api</groupId>
-			<artifactId>jena-sparql-api-core</artifactId>
+			<groupId>org.aksw.jenax</groupId>
+			<artifactId>jenax-rx-dataaccess</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.aksw.jena-sparql-api</groupId>
-			<artifactId>jena-sparql-api-mapper-core</artifactId>
+			<groupId>org.aksw.jenax</groupId>
+			<artifactId>jenax-reprogen-jpa</artifactId>
 		</dependency>
 
 		<dependency>
