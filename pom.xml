@@ -48,7 +48,7 @@
 	</developers>
 
 	<properties>
-		<jena.version>4.3.2-SNAPSHOT</jena.version>
+		<jena.version>4.3.2</jena.version>
 		<jsa.version>4.3.2-1-SNAPSHOT</jsa.version>
 
 		<!-- Project Settings -->
@@ -301,7 +301,7 @@
 		<snapshotRepository>
 			<id>maven.aksw.snapshots</id>
 			<name>AKSW Snapshot Repository</name>
-			<url>http://maven.aksw.org/archiva/repository/snapshots</url>
+			<url>https://maven.aksw.org/archiva/repository/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 
@@ -309,7 +309,7 @@
 		<repository>
 			<id>maven.aksw.snapshots</id>
 			<name>AKSW Snapshot Repository</name>
-			<url>http://maven.aksw.org/archiva/repository/snapshots</url>
+			<url>https://maven.aksw.org/archiva/repository/snapshots</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
