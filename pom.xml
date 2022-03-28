@@ -48,8 +48,8 @@
 	</developers>
 
 	<properties>
-		<jena.version>4.3.2</jena.version>
-		<jsa.version>4.3.2-1-SNAPSHOT</jsa.version>
+		<jena.version>4.4.0</jena.version>
+		<jsa.version>4.4.0-2</jsa.version>
 
 		<!-- Project Settings -->
 		<maven.compiler.release>11</maven.compiler.release>
