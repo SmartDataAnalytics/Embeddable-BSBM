@@ -2,10 +2,10 @@ package benchmark.testdriver.model;
 
 import java.util.List;
 
-import org.aksw.jena_sparql_api.mapper.annotation.DefaultIri;
-import org.aksw.jena_sparql_api.mapper.annotation.IriNs;
-import org.aksw.jena_sparql_api.mapper.annotation.IriType;
-import org.aksw.jena_sparql_api.mapper.annotation.RdfType;
+import org.aksw.jenax.annotation.reprogen.DefaultIri;
+import org.aksw.jenax.annotation.reprogen.IriNs;
+import org.aksw.jenax.annotation.reprogen.IriType;
+import org.aksw.jenax.annotation.reprogen.RdfType;
 
 @RdfType("bsbm:BsbmResult")
 @DefaultIri("#{experimentBaseIri}result")

@@ -6,7 +6,7 @@
 
 	<groupId>org.aksw.bsbm</groupId>
 	<artifactId>bsbm-parent</artifactId>
-	<version>3.1.4</version>
+	<version>3.1.6</version>
 
 	<packaging>pom</packaging>
 
@@ -17,7 +17,7 @@
 	<modules>
 		<module>bsbm-core</module>
 		<module>bsbm-cli</module>
-		<module>bsbm-jsa</module>
+		<module>bsbm-jenax</module>
 	</modules>
 
 	<licenses>
@@ -48,14 +48,13 @@
 	</developers>
 
 	<properties>
-		<jena.version>3.13.1</jena.version>
-		<jsa.subversion>1</jsa.subversion>
-
-		<jsa.version>${jena.version}-${jsa.subversion}</jsa.version>
+		<jena.version>4.4.0</jena.version>
+		<jsa.version>4.4.0-2</jsa.version>
 
 		<!-- Project Settings -->
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.release>11</maven.compiler.release>
+<!-- 		<maven.compiler.source>1.8</maven.compiler.source> -->
+<!-- 		<maven.compiler.target>1.8</maven.compiler.target> -->
 		<java.version.javadoc>http://java.sun.com/javase/6/docs/api/</java.version.javadoc>
 		<file.encoding>UTF-8</file.encoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -82,10 +81,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.0</version>
+				<version>3.8.0</version>
 				<configuration>
-					<source>${maven.compiler.source}</source>
-					<target>${maven.compiler.target}</target>
+					<release>${maven.compiler.release}</release>
+<!-- 					<source>${maven.compiler.source}</source> -->
+<!-- 					<target>${maven.compiler.target}</target> -->
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
@@ -128,9 +128,11 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.17</version>
+<!--
 				<configuration>
 					<skipTests>false</skipTests>
 				</configuration>
+-->
 			</plugin>
 		</plugins>
 
@@ -204,20 +206,20 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.aksw.jena-sparql-api</groupId>
-				<artifactId>jena-sparql-api-core</artifactId>
+				<groupId>org.aksw.jenax</groupId>
+				<artifactId>jenax-rx-dataaccess</artifactId>
 				<version>${jsa.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.aksw.jena-sparql-api</groupId>
-				<artifactId>jena-sparql-api-mapper-annotations</artifactId>
+				<groupId>org.aksw.jenax</groupId>
+				<artifactId>jenax-annotations-reprogen</artifactId>
 				<version>${jsa.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.aksw.jena-sparql-api</groupId>
-				<artifactId>jena-sparql-api-mapper-core</artifactId>
+				<groupId>org.aksw.jenax</groupId>
+				<artifactId>jenax-reprogen-jpa</artifactId>
 				<version>${jsa.version}</version>
 			</dependency>
 
@@ -299,7 +301,7 @@
 		<snapshotRepository>
 			<id>maven.aksw.snapshots</id>
 			<name>AKSW Snapshot Repository</name>
-			<url>http://maven.aksw.org/archiva/repository/snapshots</url>
+			<url>https://maven.aksw.org/archiva/repository/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 
@@ -307,7 +309,7 @@
 		<repository>
 			<id>maven.aksw.snapshots</id>
 			<name>AKSW Snapshot Repository</name>
-			<url>http://maven.aksw.org/archiva/repository/snapshots</url>
+			<url>https://maven.aksw.org/archiva/repository/snapshots</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
