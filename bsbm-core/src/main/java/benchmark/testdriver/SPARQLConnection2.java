@@ -5,8 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.jena.ext.com.google.common.base.Stopwatch;
-import org.apache.jena.ext.com.google.common.collect.Iterators;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.query.QueryExecution;
@@ -15,6 +13,9 @@ import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdfconnection.SparqlQueryConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.Iterators;
 
 import benchmark.qualification.QueryResult;
 
@@ -28,14 +29,14 @@ public class SPARQLConnection2 implements ServerConnection {
     public SPARQLConnection2(SparqlQueryConnection qef) {
         this.conn = qef;
     }
-    
+
     public static long consume(QueryExecution qe) {
-       	org.apache.jena.query.Query query = qe.getQuery();
+           org.apache.jena.query.Query query = qe.getQuery();
         assert query != null : "QueryExecution did not tell us which query it is bound to - query was null";
         long result = consume(qe, query);
         return result;
     }
-    
+
     public static long consume(QueryExecution qe, org.apache.jena.query.Query query) {
         int queryType = query.getQueryType();
 
@@ -112,7 +113,7 @@ public class SPARQLConnection2 implements ServerConnection {
                 heads = rs.getResultVars();
                 numResults = ResultSetFormatter.consume(rs);
             } else {
-            	numResults = (int)consume(qe);
+                numResults = (int)consume(qe);
             }
 
             System.out.println("RESULT ITEMS: " + numResults);
