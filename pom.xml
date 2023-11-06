@@ -6,7 +6,7 @@
 
 	<groupId>org.aksw.bsbm</groupId>
 	<artifactId>bsbm-parent</artifactId>
-	<version>3.1.6</version>
+	<version>3.1.8</version>
 
 	<packaging>pom</packaging>
 
@@ -48,8 +48,8 @@
 	</developers>
 
 	<properties>
-		<jena.version>4.4.0</jena.version>
-		<jsa.version>4.4.0-2</jsa.version>
+		<jena.version>4.9.0</jena.version>
+		<jenax.version>4.9.0-1</jenax.version>
 
 		<!-- Project Settings -->
 		<maven.compiler.release>11</maven.compiler.release>
@@ -207,34 +207,29 @@
 
 			<dependency>
 				<groupId>org.aksw.jenax</groupId>
-				<artifactId>jenax-rx-dataaccess</artifactId>
-				<version>${jsa.version}</version>
+				<artifactId>jenax-bom</artifactId>
+				<version>${jenax.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 
-			<dependency>
-				<groupId>org.aksw.jenax</groupId>
-				<artifactId>jenax-annotations-reprogen</artifactId>
-				<version>${jsa.version}</version>
-			</dependency>
+<!--			<dependency>-->
+<!--				<groupId>org.aksw.jenax</groupId>-->
+<!--				<artifactId>jenax-rx-dataaccess</artifactId>-->
+<!--				<version>${jenax.version}</version>-->
+<!--			</dependency>-->
 
-			<dependency>
-				<groupId>org.aksw.jenax</groupId>
-				<artifactId>jenax-reprogen-jpa</artifactId>
-				<version>${jsa.version}</version>
-			</dependency>
+<!--			<dependency>-->
+<!--				<groupId>org.aksw.jenax</groupId>-->
+<!--				<artifactId>jenax-annotations-reprogen</artifactId>-->
+<!--				<version>${jenax.version}</version>-->
+<!--			</dependency>-->
 
-<!--
-			<dependency>
-				<groupId>org.aksw.beast</groupId>
-				<artifactId>beast-core</artifactId>
-				<version>1.0.0</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.aksw.beast</groupId>
-				<version>1.0.0-SNAPSHOT</version>
-			</dependency>
--->
+<!--			<dependency>-->
+<!--				<groupId>org.aksw.jenax</groupId>-->
+<!--				<artifactId>jenax-reprogen-jpa</artifactId>-->
+<!--				<version>${jenax.version}</version>-->
+<!--			</dependency>-->
 
 			<dependency>
 				<groupId>junit</groupId>

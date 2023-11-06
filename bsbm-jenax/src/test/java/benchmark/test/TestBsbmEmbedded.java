@@ -4,8 +4,8 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 
 import org.aksw.jena_sparql_api.core.FluentQueryExecutionFactory;
-import org.aksw.jenax.arq.connection.core.QueryExecutionFactory;
-import org.aksw.jenax.arq.connection.core.SparqlQueryConnectionJsa;
+import org.aksw.jenax.dataaccess.sparql.connection.query.SparqlQueryConnectionJsa;
+import org.aksw.jenax.dataaccess.sparql.factory.execution.query.QueryExecutionFactory;
 import org.aksw.jenax.stmt.parser.query.SparqlQueryParserImpl;
 import org.apache.jena.rdf.model.Model;
 import org.junit.Test;
