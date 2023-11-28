@@ -6,7 +6,7 @@
 
 	<groupId>org.aksw.bsbm</groupId>
 	<artifactId>bsbm-parent</artifactId>
-	<version>3.1.9-SNAPSHOT</version>
+	<version>3.1.10-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 
@@ -48,11 +48,11 @@
 	</developers>
 
 	<properties>
-		<jena.version>4.9.0</jena.version>
-		<jenax.version>4.9.0-1</jenax.version>
+		<jena.version>5.0.0-SNAPSHOT</jena.version>
+		<jenax.version>5.0.0-1-SNAPSHOT</jenax.version>
 
 		<!-- Project Settings -->
-		<maven.compiler.release>11</maven.compiler.release>
+		<maven.compiler.release>17</maven.compiler.release>
 <!-- 		<maven.compiler.source>1.8</maven.compiler.source> -->
 <!-- 		<maven.compiler.target>1.8</maven.compiler.target> -->
 		<java.version.javadoc>http://java.sun.com/javase/6/docs/api/</java.version.javadoc>
