@@ -50,8 +50,8 @@
 	<properties>
 		<slf4j.version>2.0.9</slf4j.version>
 		<log4j.version>2.21.0</log4j.version>
-		<jena.version>5.0.0-SNAPSHOT</jena.version>
-		<jenax.version>5.0.0-1-SNAPSHOT</jenax.version>
+		<jena.version>5.0.0</jena.version>
+		<jenax.version>5.0.0-1</jenax.version>
 
 		<!-- Project Settings -->
 		<maven.compiler.release>17</maven.compiler.release>
