@@ -67,6 +67,15 @@ For the original bsbm without the jena-sparql-api (jsa) integration, use `bsbm-c
     testDriver.run();
 ```
 
+## Creating Releases from this Project
+
+```bash
+git checkout develop
+mvn gitflow:release-start gitflow:release-finish
+git checkout master
+mvn -Prelease clean deploy
+```
+
 ## TODOs
 
 * Extend the APIs to make benchmark results programmatically accessible
