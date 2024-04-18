@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryType;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdfconnection.SparqlQueryConnection;
@@ -38,28 +39,28 @@ public class SPARQLConnection2 implements ServerConnection {
     }
 
     public static long consume(QueryExecution qe, org.apache.jena.query.Query query) {
-        int queryType = query.getQueryType();
+        QueryType queryType = query.queryType();
 
         long result = consume(qe, queryType);
         return result;
     }
 
-    public static long consume(QueryExecution qe, int queryType) {
+    public static long consume(QueryExecution qe, QueryType queryType) {
         long result;
         switch (queryType) {
-        case org.apache.jena.query.Query.QueryTypeAsk:
+        case ASK:
             qe.execAsk();
             result = 1;
             break;
-        case org.apache.jena.query.Query.QueryTypeConstruct:
+        case CONSTRUCT:
             Iterator<Triple> itC = qe.execConstructTriples();
             result = Iterators.size(itC);
             break;
-        case org.apache.jena.query.Query.QueryTypeDescribe:
+        case DESCRIBE:
             Iterator<Triple> itD = qe.execDescribeTriples();
             result = Iterators.size(itD);
             break;
-        case org.apache.jena.query.Query.QueryTypeSelect:
+        case SELECT:
             ResultSet rs = qe.execSelect();
             result = ResultSetFormatter.consume(rs);
             break;
